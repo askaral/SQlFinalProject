@@ -1,0 +1,41 @@
+create type Gender as enum('Male', 'Female');
+create type HouseType as enum('House', 'Apartment');
+create type MaritalStatus as enum('Married', 'Single', 'Widow', 'Divorced');
+create type FamilyStatus as enum ('Married', 'Single');
+
+alter table customers rename family_status to marital_status;
+alter table customers drop column marital_status;
+alter table customers add column marital_status MaritalStatus;
+alter table customers add constraint email unique(email);
+alter table agencies alter column name set not null;
+alter table owners add constraint email unique(email);
+alter table rent_info add column check_in date;
+alter table  rent_info add column check_out date;
+
+select first_name, length(first_name) , house_type from owners join houses h on owners.id = h.owner_id
+where length(first_name)= (select max(length(first_name) from owners);
+select count(*)<> 0  from houses where price between '1500' and '2000';
+select city,region,street , house_type from addresses join houses h on addresses.id = h.address_id
+where addresses.id  in (5,6,7,8,9,10);
+select house_type,price,rating,description,room,rating, owners.first_name, customers.first_name,
+name as name_agency from houses join owners  on owners.id = houses.owner_id
+join rent_info ri on houses.id = ri.house_id join agencies a on a.id = ri.agency_id
+join customers  on customers.id = ri.customer_id;
+select * from customers where date_of_birth between '2000-1-1' and '2010-1-1' offset 10 limit 15;
+select rating, house_type, first_name,last_name from owners join houses h on owners.id = h.owner_id order by rating;
+select rating, house_type, first_name,last_name from owners join houses h on owners.id = h.owner_id order by rating desc;
+select house_type, count(house_type), sum(price) from houses where house_type = 'Apartment' group by house_type;
+select * from agencies left join houses h on agencies.address_id = h.address_id
+left join addresses a on agencies.address_id = a.id where name = 'My House';
+select * , owners.first_name, city,region, street from houses  left join addresses a on a.id = houses.address_id
+left join owners  on owners.id = houses.owner_id where furniture = 'true';
+select * from houses left join addresses a on a.id = houses.address_id
+left join agencies a2 on a.id = a2.address_id left join rent_info ri on a2.id = ri.agency_id;
+select nationality, count(nationality) as quantity from customers group by nationality
+order by quantity desc;
+select * from houses where rating = (select max(rating) from houses) or
+rating = (select min(rating) from houses) or rating = (select avg(rating) from houses);
+select avg(rating) from houses;
+select * from rent_info full join customers c on c.id = rent_info.customer_id
+full join houses h on h.id = rent_info.house_id;
+select avg(price)  from houses;
